@@ -1,39 +1,20 @@
-import React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Alert,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import 'react-native-gesture-handler';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import ViewAllNotes from './components/ViewAllNotes';
+import Note from './components/Note';
+import {createStackNavigator} from '@react-navigation/stack';
+import {Text, View} from 'react-native';
 
-const App: React.FC = () => {
-  const onTest = () => {
-    Alert.alert('hello!', 'OK');
-  };
+const Stack = createStackNavigator();
 
+export default function App() {
   return (
-    <>
-      <View style={styles.wrap}>
-        <Text style={styles.greeting}>Hi</Text>
-        <TouchableOpacity>
-          <Button title="Yo" onPress={onTest} color="red" />
-        </TouchableOpacity>
-      </View>
-    </>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={ViewAllNotes} />
+        <Stack.Screen name="Note" component={Note} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
-
-export default App;
-
-const styles = StyleSheet.create({
-  wrap: {
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  greeting: {
-    color: '#999',
-    fontWeight: 'bold',
-  },
-});
+}
