@@ -1,13 +1,18 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { uuid } from 'uuidv4';
 import AsyncStorage from '@react-native-community/async-storage';
 
-type NotesContextType = {};
-interface Note {
+export interface Note {
   id: string,
   body: string;
   dateCreated: Date;
 }
+
+type NotesContextType = {
+  notes: Note[],
+  addNote: (body: string, dateCreated: Date) => Promise<void>,
+  deleteNote: (id: string) => Promise<void>,
+  editNote: (id: string, newBody: string) => Promise<void>,
+};
 
 const NotesContext = React.createContext<NotesContextType | undefined>(
   undefined,
@@ -28,15 +33,15 @@ export const NotesProvider: React.FC = ({children}) => {
   const getDataFromAsyncStorage = async () => {
     try {
       const storageNotes = await AsyncStorage.getItem('notes');
-      setNotes(storageNotes != null ? JSON.parse(storageNotes) : null);
+      setNotes(storageNotes != null ? JSON.parse(storageNotes) : []);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const addNote = async ({body, dateCreated}: Note): Promise<void> => {
+  const addNote = async (body: string, dateCreated: Date): Promise<void> => {
     try {
-      const updatedNotes = [...notes, {id: uuid(), body, dateCreated}];
+      const updatedNotes = notes.concat({id: Math.random()+'', body, dateCreated});
       const jsonNotes = JSON.stringify(updatedNotes)
       await AsyncStorage.setItem('notes', jsonNotes)
       setNotes(updatedNotes);

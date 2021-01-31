@@ -1,23 +1,26 @@
-import React from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
-import {NavigationScreenProp, NavigationState} from 'react-navigation';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
+import {useNotes, Note} from '../contexts/NotesContext';
 
 interface NavigationParams {}
 
-type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
-
-interface Props {
-  navigation: Navigation;
-}
-
-const App: React.FC<Props> = ({navigation}) => {
+const App: React.FC = () => {
+  const [text, setText] = useState<string>('');
+  const {addNote} = useNotes();
   return (
     <>
       <View style={styles.wrap}>
         <Text style={styles.greeting}>Note</Text>
         <Button
-          title="Go to the home page"
-          onPress={() => navigation.navigate('Home')}
+          title="Add"
+          onPress={() => addNote(text, new Date().toLocaleDateString())}
+        />
+        <TextInput
+          style={styles.text}
+          multiline={true}
+          numberOfLines={10}
+          onChangeText={(inputText) => setText(inputText)}
+          value={text}
         />
       </View>
     </>
@@ -34,5 +37,9 @@ const styles = StyleSheet.create({
   greeting: {
     color: '#999',
     fontWeight: 'bold',
+  },
+  text: {
+    borderColor: 'red',
+    borderWidth: 10,
   },
 });

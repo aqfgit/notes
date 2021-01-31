@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
+import {useNotes, Note} from '../contexts/NotesContext';
 
 interface NavigationParams {}
 
@@ -10,9 +11,11 @@ interface Props {
   navigation: Navigation;
 }
 const ViewAllNotes: React.FC<Props> = ({navigation}) => {
+  const {notes} = useNotes();
   return (
     <>
       <View style={styles.wrap}>
+        {console.log(notes)}
         <Text style={styles.greeting}>Hadi</Text>
         <TouchableOpacity>
           <Button
@@ -20,6 +23,14 @@ const ViewAllNotes: React.FC<Props> = ({navigation}) => {
             onPress={() => navigation.navigate('Note')}
             color="red"
           />
+          {notes &&
+            notes.map((note: Note) => {
+              return (
+                <Text key={note.id} style={styles.greeting}>
+                  {note.body}
+                </Text>
+              );
+            })}
         </TouchableOpacity>
       </View>
     </>
