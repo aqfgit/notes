@@ -4,7 +4,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import ViewAllNotes from './components/ViewAllNotes';
 import Note from './components/Note';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Text, View} from 'react-native';
 
 const Stack = createStackNavigator();
 

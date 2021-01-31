@@ -1,15 +1,15 @@
 import React from 'react';
-import {
-  Button,
-  StyleSheet,
-  Alert,
-  Text,
-  View,
-  TouchableOpacity,
-} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {NavigationScreenProp, NavigationState} from 'react-navigation';
 
-const ViewAllNotes: React.FC = ({navigation}) => {
+interface NavigationParams {}
+
+type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
+
+interface Props {
+  navigation: Navigation;
+}
+const ViewAllNotes: React.FC<Props> = ({navigation}) => {
   return (
     <>
       <View style={styles.wrap}>
