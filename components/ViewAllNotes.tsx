@@ -12,6 +12,16 @@ interface Props {
 }
 const ViewAllNotes: React.FC<Props> = ({navigation}) => {
   const {notes} = useNotes();
+
+  const getNotePreview = (body: string): string => {
+    const preview = [];
+    for (let i = 0; i < 50; i++) {
+      preview.push(body[i]);
+    }
+
+    return preview.join('');
+  };
+
   return (
     <>
       <View style={styles.wrap}>
@@ -19,16 +29,20 @@ const ViewAllNotes: React.FC<Props> = ({navigation}) => {
         <Text style={styles.greeting}>Hadi</Text>
         <TouchableOpacity>
           <Button
-            title="Go to the note"
-            onPress={() => navigation.navigate('Note')}
-            color="red"
+            title="Add a new note"
+            onPress={() => navigation.navigate('Note', {id: null})}
+            color="blue"
           />
           {notes &&
             notes.map((note: Note) => {
               return (
-                <Text key={note.id} style={styles.greeting}>
-                  {note.body}
-                </Text>
+                <Button
+                  key={note.id}
+                  title={getNotePreview(note.body)}
+                  style={styles.greeting}
+                  onPress={() => navigation.navigate('Note', {id: note.id})}
+                  color="red"
+                />
               );
             })}
         </TouchableOpacity>
