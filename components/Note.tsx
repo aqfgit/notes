@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
+import DeleteNoteButton from './DeleteNoteButton';
+import {StyleSheet, Text, View, Button, TextInput, Alert} from 'react-native';
 import {useNotes, Note} from '../contexts/NotesContext';
 
 type Props = {
@@ -10,13 +11,13 @@ type Props = {
   };
 };
 
-const App: React.FC<Props> = ({route}) => {
+const App: React.FC<Props> = ({route, navigation}) => {
   const [text, setText] = useState<string>('');
   const [editable, setEditable] = useState(true);
   const [isNew, setIsNew] = useState(true);
   const {id} = route.params;
   const [noteId, setNoteId] = useState(id);
-  const {addNote, getNote, editNote} = useNotes();
+  const {addNote, getNote, editNote, setIsAddingANewNote} = useNotes();
 
   useEffect(() => {
     if (id) {
@@ -24,6 +25,8 @@ const App: React.FC<Props> = ({route}) => {
       setEditable(false);
       setIsNew(false);
     }
+
+    return setIsAddingANewNote(false);
   }, []);
 
   return (
@@ -65,6 +68,7 @@ const App: React.FC<Props> = ({route}) => {
           value={text}
         />
       </View>
+      {!isNew && <DeleteNoteButton navigation={navigation} noteId={noteId} />}
     </>
   );
 };

@@ -10,7 +10,9 @@ export interface Note {
 
 type NotesContextType = {
   notes: Note[],
-  addNote: (body: string, dateCreated: Date) => Promise<void>,
+  isAddingANewNote: boolean,
+  setIsAddingANewNote: (newState: boolean) => void,
+  addNote: (body: string, dateCreated: Date) => Promise<string | null>,
   deleteNote: (id: string) => Promise<void>,
   editNote: (id: string, newBody: string) => Promise<void>,
   getNote: (id: string) => Note,
@@ -27,6 +29,7 @@ export const useNotes = () => {
 
 export const NotesProvider: React.FC = ({children}) => {
   const [notes, setNotes] = useState<Note[] | []>([]);
+  const [isAddingANewNote, setIsAddingANewNote] = useState<boolean>(false);
 
   useEffect(() => {
     getDataFromAsyncStorage();
@@ -94,10 +97,12 @@ export const NotesProvider: React.FC = ({children}) => {
 
   const value = {
     notes,
+    isAddingANewNote,
+    setIsAddingANewNote,
     addNote,
     deleteNote,
     editNote,
-    getNote
+    getNote,
   };
 
   return (

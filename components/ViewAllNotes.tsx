@@ -1,7 +1,15 @@
-import React from 'react';
-import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
 import {useNotes, Note} from '../contexts/NotesContext';
+import NoteListItem from './NoteListItem';
 
 interface NavigationParams {}
 
@@ -11,41 +19,33 @@ interface Props {
   navigation: Navigation;
 }
 const ViewAllNotes: React.FC<Props> = ({navigation}) => {
-  const {notes} = useNotes();
-
-  const getNotePreview = (body: string): string => {
-    const preview = [];
-    for (let i = 0; i < 50; i++) {
-      preview.push(body[i]);
-    }
-
-    return preview.join('');
-  };
+  const {notes, setIsAddingANewNote} = useNotes();
 
   return (
     <>
       <View style={styles.wrap}>
         {console.log(notes)}
-        <Text style={styles.greeting}>Hadi</Text>
         <TouchableOpacity>
           <Button
             title="Add a new note"
-            onPress={() => navigation.navigate('Note', {id: null})}
+            onPress={() => {
+              setIsAddingANewNote(true);
+              navigation.navigate('Note', {id: null});
+            }}
             color="blue"
           />
-          {notes &&
-            notes.map((note: Note) => {
-              return (
-                <Button
-                  key={note.id}
-                  title={getNotePreview(note.body)}
-                  style={styles.greeting}
-                  onPress={() => navigation.navigate('Note', {id: note.id})}
-                  color="red"
-                />
-              );
-            })}
         </TouchableOpacity>
+        {notes &&
+          notes.map((note: Note) => {
+            return (
+              <NoteListItem
+                key={note.id}
+                navigation={navigation}
+                noteId={note.id}
+                noteBody={note.body}
+              />
+            );
+          })}
       </View>
     </>
   );
@@ -55,8 +55,10 @@ export default ViewAllNotes;
 
 const styles = StyleSheet.create({
   wrap: {
-    alignItems: 'center',
-    alignSelf: 'center',
+    borderWidth: 5,
+    borderColor: 'green',
+    flex: 1,
+    flexDirection: 'column',
   },
   greeting: {
     color: '#999',
