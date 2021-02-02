@@ -17,18 +17,21 @@ const NoteListItem: React.FC<Props> = ({navigation, noteId, noteBody}) => {
 
   const getNotePreview = (body: string): string => {
     const preview = [];
-    for (let i = 0; i < 50; i++) {
+    const characterLimit = 35;
+    for (let i = 0; i < characterLimit; i++) {
       preview.push(body[i]);
     }
 
-    return preview.join('');
+    return body.length > characterLimit
+      ? preview.join('').concat('...')
+      : preview.join('');
   };
 
   useEffect(() => {
     if (isAddingANewNote) {
       setShowDelete(false);
     }
-  });
+  }, [isAddingANewNote]);
 
   return (
     <TouchableOpacity
@@ -55,11 +58,12 @@ export default NoteListItem;
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 40,
+    fontSize: 16,
   },
   wrap: {
-    borderWidth: 1,
-    borderColor: 'red',
+    borderBottomWidth: 1,
+    padding: 15,
+    borderColor: 'grey',
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',

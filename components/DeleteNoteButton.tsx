@@ -1,7 +1,9 @@
 import React from 'react';
-import {StyleSheet, Button, Alert} from 'react-native';
+import {StyleSheet, Button, Alert, Text} from 'react-native';
 import {useNotes} from '../contexts/NotesContext';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 type Navigation = NavigationScreenProp<NavigationState>;
 
@@ -17,8 +19,10 @@ const DeleteNoteButton: React.FC<Props> = ({
 }) => {
   const {deleteNote} = useNotes();
   return (
-    <Button
-      title="delete"
+    <Icon
+      name="trash-o"
+      color="firebrick"
+      size={20}
       onPress={() => {
         Alert.alert('Warning', 'Are you sure you wanna delete this note?', [
           {

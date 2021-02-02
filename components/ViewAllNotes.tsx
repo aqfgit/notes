@@ -1,5 +1,11 @@
 import React from 'react';
-import {Button, StyleSheet, View, TouchableOpacity} from 'react-native';
+import {
+  Button,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
 import {useNotes, Note} from '../contexts/NotesContext';
 import NoteListItem from './NoteListItem';
@@ -14,10 +20,9 @@ const ViewAllNotes: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={styles.wrap}>
-      {console.log(notes)}
-      <TouchableOpacity>
+      <TouchableOpacity style={styles.addNote}>
         <Button
-          title="Add a new note"
+          title="New Note"
           onPress={() => {
             setIsAddingANewNote(true);
             navigation.navigate('Note', {id: null});
@@ -25,17 +30,21 @@ const ViewAllNotes: React.FC<Props> = ({navigation}) => {
           color="blue"
         />
       </TouchableOpacity>
-      {notes &&
-        notes.map((note: Note) => {
-          return (
+
+      {notes && (
+        <FlatList
+          data={notes}
+          renderItem={({item}) => (
             <NoteListItem
-              key={note.id}
+              key={item.id}
               navigation={navigation}
-              noteId={note.id}
-              noteBody={note.body}
+              noteId={item.id}
+              noteBody={item.body}
             />
-          );
-        })}
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      )}
     </View>
   );
 };
@@ -52,5 +61,11 @@ const styles = StyleSheet.create({
   greeting: {
     color: '#999',
     fontWeight: 'bold',
+  },
+  addNote: {
+    position: 'absolute',
+    bottom: 40,
+    alignSelf: 'center',
+    zIndex: 2,
   },
 });
