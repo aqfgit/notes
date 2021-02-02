@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import DeleteNoteButton from './DeleteNoteButton';
-import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
-import {useNotes, Note} from '../contexts/NotesContext';
+import {useNotes} from '../contexts/NotesContext';
 
-interface NavigationParams {}
-
-type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
+type Navigation = NavigationScreenProp<NavigationState>;
 
 interface Props {
   navigation: Navigation;
@@ -15,7 +13,7 @@ interface Props {
 }
 const NoteListItem: React.FC<Props> = ({navigation, noteId, noteBody}) => {
   const [showDelete, setShowDelete] = useState(false);
-  const {deleteNote, isAddingANewNote} = useNotes();
+  const {isAddingANewNote} = useNotes();
 
   const getNotePreview = (body: string): string => {
     const preview = [];

@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import DeleteNoteButton from './DeleteNoteButton';
-import {StyleSheet, Text, View, Button, TextInput, Alert} from 'react-native';
-import {useNotes, Note} from '../contexts/NotesContext';
+import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
+import {NavigationScreenProp, NavigationState} from 'react-navigation';
+import {useNotes} from '../contexts/NotesContext';
+
+type Navigation = NavigationScreenProp<NavigationState>;
 
 type Props = {
   route: {
@@ -9,6 +12,7 @@ type Props = {
       id: string;
     };
   };
+  navigation: Navigation;
 };
 
 const App: React.FC<Props> = ({route, navigation}) => {

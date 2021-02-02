@@ -1,11 +1,9 @@
 import React from 'react';
 import {StyleSheet, Button, Alert} from 'react-native';
-import {useNotes, Note} from '../contexts/NotesContext';
+import {useNotes} from '../contexts/NotesContext';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
 
-interface NavigationParams {}
-
-type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
+type Navigation = NavigationScreenProp<NavigationState>;
 
 type Props = {
   navigation: Navigation;
