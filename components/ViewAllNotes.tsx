@@ -1,16 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {
-  Button,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  FlatList,
-  Text,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, View, FlatList} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
-import {useNotes, Note} from '../contexts/NotesContext';
+import {useNotes} from '../contexts/NotesContext';
 import NoteListItem from './NoteListItem';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import ControlsButton from './ControlsButton';
 
 type Navigation = NavigationScreenProp<NavigationState>;
 
@@ -58,41 +51,35 @@ const ViewAllNotes: React.FC<Props> = ({
     <View style={notesListStyles.wrap}>
       {!isDeletingNotesFromList ? (
         <View style={notesListStyles.controls}>
-          <TouchableOpacity
-            style={[notesListStyles.button, notesListStyles.addButton]}
-            onPress={() => {
+          <ControlsButton
+            additionalStyles={notesListStyles.addButton}
+            text="New note"
+            onPressHandler={() => {
               navigation.navigate('Note', {id: null});
-            }}>
-            <Icon
-              name="add"
-              size={30}
-              style={notesListStyles.icon}
-              color="blue"
-            />
-            <Text style={notesListStyles.buttonText}>New note</Text>
-          </TouchableOpacity>
+            }}
+            iconName="add"
+            iconSize={30}
+            iconColor="blue"
+          />
         </View>
       ) : (
         <View style={notesListStyles.controls}>
-          <TouchableOpacity
-            onPress={() => {
+          <ControlsButton
+            text={allNotesSelectedForDelete ? 'Unselect all' : 'Select all'}
+            onPressHandler={() => {
               allNotesSelectedForDelete
                 ? unselectAllNotesForDelete()
                 : selectAllNotesForDelete();
             }}
-            style={notesListStyles.button}>
-            <Icon
-              name={allNotesSelectedForDelete ? 'filter-none' : 'add-to-photos'}
-              size={20}
-              style={notesListStyles.icon}
-              color="blue"
-            />
-            <Text style={notesListStyles.buttonText}>
-              {allNotesSelectedForDelete ? 'Unselect all' : 'Select all'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
+            iconName={
+              allNotesSelectedForDelete ? 'filter-none' : 'add-to-photos'
+            }
+            iconSize={20}
+            iconColor="blue"
+          />
+          <ControlsButton
+            text="Delete"
+            onPressHandler={() => {
               notesSelectedForDelete.forEach((id) => {
                 deleteNote(id);
               });
@@ -100,16 +87,11 @@ const ViewAllNotes: React.FC<Props> = ({
               setIsDeletingNotesFromList(false);
               setAllNotesSelectedForDelete(false);
             }}
+            iconName="delete"
+            iconSize={20}
+            iconColor="firebrick"
             disabled={notesSelectedForDelete.length === 0}
-            style={notesListStyles.button}>
-            <Icon
-              name="delete"
-              size={20}
-              style={notesListStyles.icon}
-              color="blue"
-            />
-            <Text style={notesListStyles.buttonText}>Delete</Text>
-          </TouchableOpacity>
+          />
         </View>
       )}
       {console.log('NOTES SELECTED FOR DELETE', notesSelectedForDelete.length)}
@@ -140,36 +122,13 @@ const ViewAllNotes: React.FC<Props> = ({
 
 export default ViewAllNotes;
 
-export const notesListStyles = StyleSheet.create({
+const notesListStyles = StyleSheet.create({
   wrap: {
     flex: 1,
     flexDirection: 'column',
     paddingLeft: 25,
   },
-  greeting: {
-    color: '#999',
-    fontWeight: 'bold',
-  },
-  addNoteButton: {
-    position: 'absolute',
-    bottom: 40,
-    alignSelf: 'center',
-    zIndex: 2,
-  },
-  icon: {
-    paddingRight: 0,
-    paddingVertical: 0,
-    alignSelf: 'center',
-    zIndex: 4,
-  },
-  selectButton: {},
-  button: {
-    flex: 0,
-    flexDirection: 'column',
-    alignSelf: 'center',
-    paddingHorizontal: 30,
-    paddingVertical: 20,
-  },
+
   addButton: {
     paddingHorizontal: 20,
     paddingVertical: 15,
@@ -185,8 +144,5 @@ export const notesListStyles = StyleSheet.create({
     borderColor: '#d1d1d1',
     borderRadius: 30,
     backgroundColor: 'rgba(241, 232, 232, 0.8).8)',
-  },
-  buttonText: {
-    fontSize: 13,
   },
 });

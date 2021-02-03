@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+const App: React.FC = () => {
   const [headerTitle, setHeaderTitle] = useState<string>('Notes');
   const [isDeletingNotesFromList, setIsDeletingNotesFromList] = useState(false);
   const [notesSelectedForDelete, setNotesSelectedForDelete] = useState<
@@ -71,4 +71,6 @@ export default function App() {
       </NotesProvider>
     </NavigationContainer>
   );
-}
+};
+
+export default App;

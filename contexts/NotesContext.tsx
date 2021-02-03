@@ -19,7 +19,7 @@ const NotesContext = React.createContext<NotesContextType>(
   {} as NotesContextType,
 );
 
-export const useNotes = () => {
+export const useNotes = (): NotesContextType => {
   return useContext(NotesContext);
 };
 

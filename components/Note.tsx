@@ -1,18 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import DeleteNoteButton from './DeleteNoteButton';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  Alert,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, Alert, TextInput} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
 import {useNotes} from '../contexts/NotesContext';
-import {notesListStyles} from './ViewAllNotes';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import ControlsButton from './ControlsButton';
 
 type Navigation = NavigationScreenProp<NavigationState>;
 
@@ -46,29 +36,23 @@ const App: React.FC<Props> = ({route, navigation}) => {
       <View style={styles.screenWrap}>
         <View style={styles.controls}>
           {!isNew ? (
-            <TouchableOpacity
-              style={[notesListStyles.button]}
-              onPress={() => {
+            <ControlsButton
+              text={editable ? 'Save' : 'Edit'}
+              onPressHandler={() => {
                 if (editable) {
                   console.log('ID', noteId);
                   editNote(noteId, text);
                 }
                 setEditable((prevState) => !prevState);
-              }}>
-              <Icon
-                name={editable ? 'save' : 'mode-edit'}
-                size={30}
-                style={notesListStyles.icon}
-                color="blue"
-              />
-              <Text style={notesListStyles.buttonText}>
-                {editable ? 'Save' : 'Edit'}
-              </Text>
-            </TouchableOpacity>
+              }}
+              iconName={editable ? 'save' : 'mode-edit'}
+              iconSize={30}
+              iconColor="blue"
+            />
           ) : (
-            <TouchableOpacity
-              style={[notesListStyles.button]}
-              onPress={async () => {
+            <ControlsButton
+              text="Save"
+              onPressHandler={async () => {
                 const newNoteID = await addNote(
                   text,
                   new Date().toLocaleDateString(),
@@ -79,20 +63,16 @@ const App: React.FC<Props> = ({route, navigation}) => {
                 setNoteId(newNoteID);
                 setIsNew(false);
                 setEditable(false);
-              }}>
-              <Icon
-                name="save"
-                size={30}
-                style={notesListStyles.icon}
-                color="blue"
-              />
-              <Text style={notesListStyles.buttonText}>Save</Text>
-            </TouchableOpacity>
+              }}
+              iconName="save"
+              iconSize={30}
+              iconColor="blue"
+            />
           )}
           {!isNew && (
-            <TouchableOpacity
-              style={[notesListStyles.button]}
-              onPress={() => {
+            <ControlsButton
+              text="Delete"
+              onPressHandler={async () => {
                 Alert.alert(
                   'Warning',
                   'Are you sure you wanna delete this note?',
@@ -110,15 +90,11 @@ const App: React.FC<Props> = ({route, navigation}) => {
                     },
                   ],
                 );
-              }}>
-              <Icon
-                name="delete"
-                size={30}
-                style={notesListStyles.icon}
-                color="firebrick"
-              />
-              <Text style={notesListStyles.buttonText}>Delete</Text>
-            </TouchableOpacity>
+              }}
+              iconName="delete"
+              iconSize={30}
+              iconColor="firebrick"
+            />
           )}
         </View>
 

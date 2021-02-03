@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import DeleteNoteButton from './DeleteNoteButton';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useNotes} from '../contexts/NotesContext';
 
 type Navigation = NavigationScreenProp<NavigationState>;
 
@@ -11,7 +9,7 @@ interface Props {
   navigation: Navigation;
   noteId: string;
   noteBody: string;
-  noteCreatedAt: Date;
+  noteCreatedAt: string;
   setIsDeletingNotesFromList: (newState: boolean) => void;
   isDeletingNotesFromList: boolean;
   allNotesSelectedForDelete: boolean;
