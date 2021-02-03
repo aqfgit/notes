@@ -21,7 +21,7 @@ const App: React.FC<Props> = ({route, navigation}) => {
   const [isNew, setIsNew] = useState(true);
   const {id} = route.params;
   const [noteId, setNoteId] = useState(id);
-  const {addNote, getNote, editNote, setIsAddingANewNote} = useNotes();
+  const {addNote, getNote, editNote} = useNotes();
 
   useEffect(() => {
     if (id) {
@@ -29,8 +29,6 @@ const App: React.FC<Props> = ({route, navigation}) => {
       setEditable(false);
       setIsNew(false);
     }
-
-    return setIsAddingANewNote(false);
   }, []);
 
   return (

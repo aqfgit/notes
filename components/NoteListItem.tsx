@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import DeleteNoteButton from './DeleteNoteButton';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNotes} from '../contexts/NotesContext';
 
 type Navigation = NavigationScreenProp<NavigationState>;
@@ -10,14 +11,39 @@ interface Props {
   navigation: Navigation;
   noteId: string;
   noteBody: string;
+  noteCreatedAt: Date;
+  setIsDeletingNotesFromList: (newState: boolean) => void;
+  isDeletingNotesFromList: boolean;
+  allNotesSelectedForDelete: boolean;
+  notesSelectedForDelete: string[];
+  setNotesSelectedForDelete: (newState: string[]) => void;
 }
-const NoteListItem: React.FC<Props> = ({navigation, noteId, noteBody}) => {
-  const [showDelete, setShowDelete] = useState(false);
-  const {isAddingANewNote} = useNotes();
+const NoteListItem: React.FC<Props> = ({
+  navigation,
+  noteId,
+  noteBody,
+  noteCreatedAt,
+  setIsDeletingNotesFromList,
+  isDeletingNotesFromList,
+  allNotesSelectedForDelete,
+  notesSelectedForDelete,
+  setNotesSelectedForDelete,
+}) => {
+  const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    if (!isDeletingNotesFromList) {
+      setSelected(false);
+    }
+  }, [isDeletingNotesFromList]);
+
+  useEffect(() => {
+    setSelected(allNotesSelectedForDelete);
+  }, [allNotesSelectedForDelete]);
 
   const getNotePreview = (body: string): string => {
     const preview = [];
-    const characterLimit = 35;
+    const characterLimit = 40;
     for (let i = 0; i < characterLimit; i++) {
       preview.push(body[i]);
     }
@@ -27,27 +53,38 @@ const NoteListItem: React.FC<Props> = ({navigation, noteId, noteBody}) => {
       : preview.join('');
   };
 
-  useEffect(() => {
-    if (isAddingANewNote) {
-      setShowDelete(false);
-    }
-  }, [isAddingANewNote]);
-
   return (
     <TouchableOpacity
       style={styles.wrap}
-      onLongPress={() => setShowDelete((prevState) => !prevState)}
-      onPress={() => {
-        setShowDelete(false);
-        navigation.navigate('Note', {id: noteId});
+      onLongPress={() => {
+        setIsDeletingNotesFromList(true);
+        setSelected(true);
       }}
-      delayLongPress={1000}>
-      <Text style={styles.text}>{getNotePreview(noteBody)}</Text>
-      {showDelete && (
-        <DeleteNoteButton
-          setShowDelete={setShowDelete}
-          navigation={navigation}
-          noteId={noteId}
+      onPress={() => {
+        if (isDeletingNotesFromList) {
+          if (selected) {
+            const filteredSelected = notesSelectedForDelete.filter(
+              (id) => id !== noteId,
+            );
+            setNotesSelectedForDelete(filteredSelected);
+          } else {
+            setNotesSelectedForDelete([...notesSelectedForDelete, noteId]);
+          }
+          setSelected((prevState) => !prevState);
+        } else {
+          navigation.navigate('Note', {id: noteId});
+        }
+      }}
+      delayLongPress={300}>
+      <View style={styles.noteWrap}>
+        <Text style={styles.text}>{getNotePreview(noteBody)}</Text>
+        <Text style={styles.date}>{noteCreatedAt}</Text>
+      </View>
+      {console.log('co?', isDeletingNotesFromList)}
+      {isDeletingNotesFromList && (
+        <Icon
+          name={selected ? 'check-box' : 'check-box-outline-blank'}
+          size={20}
         />
       )}
     </TouchableOpacity>
@@ -58,15 +95,25 @@ export default NoteListItem;
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 16,
+    fontSize: 14,
+  },
+  date: {
+    flexBasis: '100%',
+    color: '#a1a1a1',
+  },
+  noteWrap: {
+    flex: 0,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
   },
   wrap: {
-    borderBottomWidth: 1,
-    padding: 15,
-    borderColor: 'grey',
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderBottomWidth: 1,
+    paddingVertical: 15,
+    paddingRight: 20,
+    borderColor: '#d3d3d3',
   },
 });
