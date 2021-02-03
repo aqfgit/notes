@@ -1,14 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Button,
   StyleSheet,
   View,
   TouchableOpacity,
   FlatList,
+  Text,
 } from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
 import {useNotes, Note} from '../contexts/NotesContext';
 import NoteListItem from './NoteListItem';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Navigation = NavigationScreenProp<NavigationState>;
 
@@ -32,6 +34,16 @@ const ViewAllNotes: React.FC<Props> = ({
 }) => {
   const {notes, deleteNote} = useNotes();
 
+  useEffect(() => {
+    if (notes.length === notesSelectedForDelete.length) {
+      setAllNotesSelectedForDelete(true);
+    }
+  }, [
+    notes.length,
+    notesSelectedForDelete.length,
+    setAllNotesSelectedForDelete,
+  ]);
+
   const selectAllNotesForDelete = () => {
     setAllNotesSelectedForDelete(true);
     setNotesSelectedForDelete(notes.map((note) => note.id));
@@ -45,42 +57,48 @@ const ViewAllNotes: React.FC<Props> = ({
   return (
     <View style={styles.wrap}>
       {!isDeletingNotesFromList ? (
-        <TouchableOpacity style={styles.addNoteButton}>
-          <Button
-            title="New Note"
+        <View style={styles.controls}>
+          <TouchableOpacity
+            style={[styles.button, styles.addButton]}
             onPress={() => {
               navigation.navigate('Note', {id: null});
-            }}
-            color="blue"
-          />
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.deleteControls}>
-          <TouchableOpacity style={styles.selectButton}>
-            <Button
-              title={allNotesSelectedForDelete ? 'Unselect all' : 'Select all'}
-              onPress={() => {
-                allNotesSelectedForDelete
-                  ? unselectAllNotesForDelete()
-                  : selectAllNotesForDelete();
-              }}
-              color="blue"
-            />
+            }}>
+            <Icon name="add" size={30} style={styles.icon} color="blue" />
+            <Text style={styles.buttonText}>New note</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.deleteButton}>
-            <Button
-              title="Delete"
-              disabled={notesSelectedForDelete.length === 0}
-              onPress={() => {
-                notesSelectedForDelete.forEach((id) => {
-                  deleteNote(id);
-                  console.log('USUWAM ', id);
-                });
-                setNotesSelectedForDelete([]);
-                setIsDeletingNotesFromList(false);
-              }}
+        </View>
+      ) : (
+        <View style={styles.controls}>
+          <TouchableOpacity
+            onPress={() => {
+              allNotesSelectedForDelete
+                ? unselectAllNotesForDelete()
+                : selectAllNotesForDelete();
+            }}
+            style={styles.button}>
+            <Icon
+              name={allNotesSelectedForDelete ? 'filter-none' : 'add-to-photos'}
+              size={20}
+              style={styles.icon}
               color="blue"
             />
+            <Text style={styles.buttonText}>
+              {allNotesSelectedForDelete ? 'Unselect all' : 'Select all'}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              notesSelectedForDelete.forEach((id) => {
+                deleteNote(id);
+              });
+              setNotesSelectedForDelete([]);
+              setIsDeletingNotesFromList(false);
+              setAllNotesSelectedForDelete(false);
+            }}
+            disabled={notesSelectedForDelete.length === 0}
+            style={styles.button}>
+            <Icon name="delete" size={20} style={styles.icon} color="blue" />
+            <Text style={styles.buttonText}>Delete</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -128,12 +146,36 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     zIndex: 2,
   },
+  icon: {
+    paddingRight: 0,
+    paddingVertical: 0,
+    alignSelf: 'center',
+    zIndex: 4,
+  },
   selectButton: {},
-  deleteButton: {},
-  deleteControls: {
+  button: {
+    flex: 0,
+    flexDirection: 'column',
+    alignSelf: 'center',
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+  },
+  addButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  controls: {
     position: 'absolute',
     bottom: 40,
     alignSelf: 'center',
     zIndex: 2,
+    flex: 0,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#d1d1d1',
+    borderRadius: 30,
+  },
+  buttonText: {
+    fontSize: 13,
   },
 });
