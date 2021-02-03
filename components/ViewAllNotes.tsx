@@ -94,7 +94,6 @@ const ViewAllNotes: React.FC<Props> = ({
           />
         </View>
       )}
-      {console.log('NOTES SELECTED FOR DELETE', notesSelectedForDelete.length)}
       {notes && (
         <FlatList
           data={notes}
@@ -115,7 +114,6 @@ const ViewAllNotes: React.FC<Props> = ({
           keyExtractor={(item) => item.id}
         />
       )}
-      {console.log('NOTES LENGTH ', notes.length)}
     </View>
   );
 };

@@ -32,7 +32,6 @@ const App: React.FC = () => {
     <NavigationContainer>
       <NotesProvider>
         <Stack.Navigator initialRouteName="Home">
-          {console.log('TU JESTEM', isDeletingNotesFromList)}
           <Stack.Screen
             options={{
               headerTitleStyle: {alignSelf: 'flex-start'},

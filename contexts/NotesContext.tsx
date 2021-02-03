@@ -49,7 +49,6 @@ export const NotesProvider: React.FC = ({children}) => {
       const jsonNotes = JSON.stringify(updatedNotes);
       await AsyncStorage.setItem('notes', jsonNotes);
       setNotes(updatedNotes);
-      console.log('NEWNOTEID', newNote.id);
       return newNote.id;
     } catch (error) {
       console.error(error);
@@ -88,8 +87,6 @@ export const NotesProvider: React.FC = ({children}) => {
       await AsyncStorage.setItem('notes', jsonNotes);
       setNotes(updatedNotes);
     } catch (error) {
-      console.log('ID', id);
-      console.log('index', indexOfTheNote);
       console.error(error);
     }
   };

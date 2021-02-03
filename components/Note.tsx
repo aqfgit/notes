@@ -40,7 +40,6 @@ const App: React.FC<Props> = ({route, navigation}) => {
               text={editable ? 'Save' : 'Edit'}
               onPressHandler={() => {
                 if (editable) {
-                  console.log('ID', noteId);
                   editNote(noteId, text);
                 }
                 setEditable((prevState) => !prevState);
