@@ -66,11 +66,14 @@ export const NotesProvider: React.FC = ({children}) => {
   };
 
   const deleteNote = async (id: string): Promise<void> => {
+    const getRemainingNotes = (note: Note) => note.id !== id;
     try {
-      const updatedNotes = notes.filter((note: Note) => note.id !== id);
+      const updatedNotes = notes.filter(getRemainingNotes);
       const jsonNotes = JSON.stringify(updatedNotes);
       await AsyncStorage.setItem('notes', jsonNotes);
-      setNotes(updatedNotes);
+      setNotes((prevState) => {
+        return prevState.filter(getRemainingNotes);
+      });
     } catch (error) {
       console.error(error);
     }

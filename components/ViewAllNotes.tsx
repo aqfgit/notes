@@ -30,7 +30,7 @@ const ViewAllNotes: React.FC<Props> = ({
   allNotesSelectedForDelete,
   setAllNotesSelectedForDelete,
 }) => {
-  const {notes, setIsAddingANewNote} = useNotes();
+  const {notes, deleteNote} = useNotes();
 
   const selectAllNotesForDelete = () => {
     setAllNotesSelectedForDelete(true);
@@ -45,28 +45,44 @@ const ViewAllNotes: React.FC<Props> = ({
   return (
     <View style={styles.wrap}>
       {!isDeletingNotesFromList ? (
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.addNoteButton}>
           <Button
             title="New Note"
             onPress={() => {
-              setIsAddingANewNote(true);
               navigation.navigate('Note', {id: null});
             }}
             color="blue"
           />
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity style={styles.button}>
-          <Button
-            title={allNotesSelectedForDelete ? 'Unselect all' : 'Select all'}
-            onPress={() => {
-              allNotesSelectedForDelete
-                ? unselectAllNotesForDelete()
-                : selectAllNotesForDelete();
-            }}
-            color="blue"
-          />
-        </TouchableOpacity>
+        <View style={styles.deleteControls}>
+          <TouchableOpacity style={styles.selectButton}>
+            <Button
+              title={allNotesSelectedForDelete ? 'Unselect all' : 'Select all'}
+              onPress={() => {
+                allNotesSelectedForDelete
+                  ? unselectAllNotesForDelete()
+                  : selectAllNotesForDelete();
+              }}
+              color="blue"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.deleteButton}>
+            <Button
+              title="Delete"
+              disabled={notesSelectedForDelete.length === 0}
+              onPress={() => {
+                notesSelectedForDelete.forEach((id) => {
+                  deleteNote(id);
+                  console.log('USUWAM ', id);
+                });
+                setNotesSelectedForDelete([]);
+                setIsDeletingNotesFromList(false);
+              }}
+              color="blue"
+            />
+          </TouchableOpacity>
+        </View>
       )}
       {console.log('NOTES SELECTED FOR DELETE', notesSelectedForDelete.length)}
       {notes && (
@@ -89,6 +105,7 @@ const ViewAllNotes: React.FC<Props> = ({
           keyExtractor={(item) => item.id}
         />
       )}
+      {console.log('NOTES LENGTH ', notes.length)}
     </View>
   );
 };
@@ -105,7 +122,15 @@ const styles = StyleSheet.create({
     color: '#999',
     fontWeight: 'bold',
   },
-  button: {
+  addNoteButton: {
+    position: 'absolute',
+    bottom: 40,
+    alignSelf: 'center',
+    zIndex: 2,
+  },
+  selectButton: {},
+  deleteButton: {},
+  deleteControls: {
     position: 'absolute',
     bottom: 40,
     alignSelf: 'center',

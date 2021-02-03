@@ -59,6 +59,7 @@ const NoteListItem: React.FC<Props> = ({
       onLongPress={() => {
         setIsDeletingNotesFromList(true);
         setSelected(true);
+        setNotesSelectedForDelete([...notesSelectedForDelete, noteId]);
       }}
       onPress={() => {
         if (isDeletingNotesFromList) {
