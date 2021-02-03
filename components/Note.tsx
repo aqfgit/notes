@@ -1,8 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import DeleteNoteButton from './DeleteNoteButton';
-import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Alert,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import {NavigationScreenProp, NavigationState} from 'react-navigation';
 import {useNotes} from '../contexts/NotesContext';
+import {notesListStyles} from './ViewAllNotes';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Navigation = NavigationScreenProp<NavigationState>;
 
@@ -21,7 +31,7 @@ const App: React.FC<Props> = ({route, navigation}) => {
   const [isNew, setIsNew] = useState(true);
   const {id} = route.params;
   const [noteId, setNoteId] = useState(id);
-  const {addNote, getNote, editNote} = useNotes();
+  const {addNote, getNote, editNote, deleteNote} = useNotes();
 
   useEffect(() => {
     if (id) {
@@ -33,44 +43,97 @@ const App: React.FC<Props> = ({route, navigation}) => {
 
   return (
     <>
-      <View style={styles.wrap}>
-        <Text style={styles.greeting}>Note</Text>
-        {!isNew ? (
-          <Button
-            title={editable ? 'Save' : 'Edit'}
-            onPress={() => {
-              if (editable) {
-                console.log('ID', noteId);
-                editNote(noteId, text);
-              }
-              setEditable((prevState) => !prevState);
-            }}
-          />
-        ) : (
-          <Button
-            title="Save"
-            onPress={async () => {
-              const newNoteID = await addNote(
-                text,
-                new Date().toLocaleDateString(),
-              );
-              setNoteId(newNoteID);
-              setIsNew(false);
-              setEditable(false);
-            }}
-          />
-        )}
+      <View style={styles.screenWrap}>
+        <View style={styles.controls}>
+          {!isNew ? (
+            <TouchableOpacity
+              style={[notesListStyles.button]}
+              onPress={() => {
+                if (editable) {
+                  console.log('ID', noteId);
+                  editNote(noteId, text);
+                }
+                setEditable((prevState) => !prevState);
+              }}>
+              <Icon
+                name={editable ? 'save' : 'mode-edit'}
+                size={30}
+                style={notesListStyles.icon}
+                color="blue"
+              />
+              <Text style={notesListStyles.buttonText}>
+                {editable ? 'Save' : 'Edit'}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[notesListStyles.button]}
+              onPress={async () => {
+                const newNoteID = await addNote(
+                  text,
+                  new Date().toLocaleDateString(),
+                );
+                if (newNoteID === null) {
+                  throw new Error('There was a problem with creating a note');
+                }
+                setNoteId(newNoteID);
+                setIsNew(false);
+                setEditable(false);
+              }}>
+              <Icon
+                name="save"
+                size={30}
+                style={notesListStyles.icon}
+                color="blue"
+              />
+              <Text style={notesListStyles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          )}
+          {!isNew && (
+            <TouchableOpacity
+              style={[notesListStyles.button]}
+              onPress={() => {
+                Alert.alert(
+                  'Warning',
+                  'Are you sure you wanna delete this note?',
+                  [
+                    {
+                      text: 'Yes',
+                      onPress: () => {
+                        deleteNote(noteId);
+                        navigation.navigate('Home');
+                      },
+                    },
+                    {
+                      text: 'Cancel',
+                      style: 'cancel',
+                    },
+                  ],
+                );
+              }}>
+              <Icon
+                name="delete"
+                size={30}
+                style={notesListStyles.icon}
+                color="firebrick"
+              />
+              <Text style={notesListStyles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-        <TextInput
-          editable={editable}
-          style={styles.text}
-          multiline={true}
-          numberOfLines={10}
-          onChangeText={(inputText) => setText(inputText)}
-          value={text}
-        />
+        <View style={styles.inputWrap}>
+          <TextInput
+            editable={editable}
+            style={styles.text}
+            multiline={true}
+            numberOfLines={1}
+            onChangeText={(inputText) => setText(inputText)}
+            value={text}
+            autoFocus={true}
+          />
+        </View>
       </View>
-      {!isNew && <DeleteNoteButton navigation={navigation} noteId={noteId} />}
     </>
   );
 };
@@ -78,16 +141,22 @@ const App: React.FC<Props> = ({route, navigation}) => {
 export default App;
 
 const styles = StyleSheet.create({
-  wrap: {
-    alignItems: 'center',
-    alignSelf: 'center',
+  screenWrap: {
+    flex: 1,
+    paddingHorizontal: 20,
   },
-  greeting: {
-    color: '#999',
-    fontWeight: 'bold',
+  inputWrap: {
+    flex: 0,
+  },
+  controls: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#d1d1d1',
+    paddingHorizontal: 20,
   },
   text: {
-    borderColor: 'red',
-    borderWidth: 10,
+    lineHeight: 20,
   },
 });

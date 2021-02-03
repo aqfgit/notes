@@ -55,34 +55,39 @@ const ViewAllNotes: React.FC<Props> = ({
   };
 
   return (
-    <View style={styles.wrap}>
+    <View style={notesListStyles.wrap}>
       {!isDeletingNotesFromList ? (
-        <View style={styles.controls}>
+        <View style={notesListStyles.controls}>
           <TouchableOpacity
-            style={[styles.button, styles.addButton]}
+            style={[notesListStyles.button, notesListStyles.addButton]}
             onPress={() => {
               navigation.navigate('Note', {id: null});
             }}>
-            <Icon name="add" size={30} style={styles.icon} color="blue" />
-            <Text style={styles.buttonText}>New note</Text>
+            <Icon
+              name="add"
+              size={30}
+              style={notesListStyles.icon}
+              color="blue"
+            />
+            <Text style={notesListStyles.buttonText}>New note</Text>
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.controls}>
+        <View style={notesListStyles.controls}>
           <TouchableOpacity
             onPress={() => {
               allNotesSelectedForDelete
                 ? unselectAllNotesForDelete()
                 : selectAllNotesForDelete();
             }}
-            style={styles.button}>
+            style={notesListStyles.button}>
             <Icon
               name={allNotesSelectedForDelete ? 'filter-none' : 'add-to-photos'}
               size={20}
-              style={styles.icon}
+              style={notesListStyles.icon}
               color="blue"
             />
-            <Text style={styles.buttonText}>
+            <Text style={notesListStyles.buttonText}>
               {allNotesSelectedForDelete ? 'Unselect all' : 'Select all'}
             </Text>
           </TouchableOpacity>
@@ -96,9 +101,14 @@ const ViewAllNotes: React.FC<Props> = ({
               setAllNotesSelectedForDelete(false);
             }}
             disabled={notesSelectedForDelete.length === 0}
-            style={styles.button}>
-            <Icon name="delete" size={20} style={styles.icon} color="blue" />
-            <Text style={styles.buttonText}>Delete</Text>
+            style={notesListStyles.button}>
+            <Icon
+              name="delete"
+              size={20}
+              style={notesListStyles.icon}
+              color="blue"
+            />
+            <Text style={notesListStyles.buttonText}>Delete</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -130,7 +140,7 @@ const ViewAllNotes: React.FC<Props> = ({
 
 export default ViewAllNotes;
 
-const styles = StyleSheet.create({
+export const notesListStyles = StyleSheet.create({
   wrap: {
     flex: 1,
     flexDirection: 'column',
@@ -174,6 +184,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#d1d1d1',
     borderRadius: 30,
+    backgroundColor: 'rgba(241, 232, 232, 0.8).8)',
   },
   buttonText: {
     fontSize: 13,

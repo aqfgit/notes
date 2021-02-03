@@ -4,12 +4,12 @@ import AsyncStorage from '@react-native-community/async-storage';
 export interface Note {
   id: string;
   body: string;
-  dateCreated: Date;
+  dateCreated: string;
 }
 
 export type NotesContextType = {
   notes: Note[];
-  addNote: (body: string, dateCreated: Date) => Promise<string | null>;
+  addNote: (body: string, dateCreated: string) => Promise<string | null>;
   deleteNote: (id: string) => Promise<void>;
   editNote: (id: string, newBody: string) => Promise<void>;
   getNote: (id: string) => Note;
@@ -41,7 +41,7 @@ export const NotesProvider: React.FC = ({children}) => {
 
   const addNote = async (
     body: string,
-    dateCreated: Date,
+    dateCreated: string,
   ): Promise<string | null> => {
     try {
       const newNote = {id: Math.random() + '', body, dateCreated};
