@@ -9,7 +9,7 @@ interface Props {
   iconSize: number;
   iconColor: string;
   text: string;
-  additionalStyles?: any;
+  additionalStyles?: {[key: string]: unknown};
 }
 
 const ControlsButton: React.FC<Props> = ({

@@ -28,6 +28,9 @@ const ViewAllNotes: React.FC<Props> = ({
   const {notes, deleteNote} = useNotes();
 
   useEffect(() => {
+    if (notes.length === 0 || notesSelectedForDelete.length === 0) {
+      return;
+    }
     if (notes.length === notesSelectedForDelete.length) {
       setAllNotesSelectedForDelete(true);
     }
